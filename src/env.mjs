@@ -7,10 +7,20 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string(),
+    DATABASE_URL: z
+      .string()
+      .url()
+      .refine((url) => url.includes("mysql://")),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    CLERK_SECRET_KEY: z.string().refine((key) => {
+      if (process.env.NODE_ENV === "production") {
+        return key.startsWith("sk_live");
+      }
+
+      return key.startsWith("sk_test");
+    }),
   },
 
   /**
@@ -19,7 +29,13 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().refine((key) => {
+      if (process.env.NODE_ENV === "production") {
+        return key.startsWith("pk_live");
+      }
+
+      return key.startsWith("pk_test");
+    }),
   },
 
   /**
@@ -29,7 +45,9 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
