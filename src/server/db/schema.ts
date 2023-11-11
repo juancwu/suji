@@ -7,12 +7,21 @@ import {
   datetime,
   index,
   int,
+  json,
+  mysqlEnum,
   mysqlTableCreator,
   text,
   timestamp,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+const maxCategoryLen = 50;
+const maxSummaryLen = 50;
+const maxAccountNameLen = 50;
+const publicIdLen = 16;
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -41,13 +50,14 @@ export const accounts = mysqlTable(
   "accounts",
   {
     internalId: int("internal_id").primaryKey().autoincrement(),
-    name: varchar("name", { length: 120 }),
+    name: varchar("name", { length: maxAccountNameLen }),
     userInternalId: int("user_internal_id"),
-    publicId: char("public_id", { length: 16 }).notNull(),
+    publicId: char("public_id", { length: publicIdLen }).notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
+    categories: json("categories").$type<string[]>().default([]),
   },
   (table) => ({
     nameIdx: uniqueIndex("name_idx").on(table.name, table.userInternalId),
@@ -55,13 +65,17 @@ export const accounts = mysqlTable(
   }),
 );
 
+export const insertAccountSchema = createInsertSchema(accounts, {
+  categories: z.array(z.string().min(1).max(maxCategoryLen)),
+});
+
 export const transactions = mysqlTable(
   "transactions",
   {
     internalId: int("internal_id").primaryKey().autoincrement(),
-    summary: varchar("summary", { length: 50 }).notNull(),
+    summary: varchar("summary", { length: maxSummaryLen }).notNull(),
     details: text("details"),
-    publicId: char("public_id", { length: 16 }).notNull(),
+    publicId: char("public_id", { length: publicIdLen }).notNull(),
     userInternalId: int("user_internal_id"),
     accountInternalId: int("account_internal_id"),
     date: datetime("date").notNull(),
@@ -69,9 +83,13 @@ export const transactions = mysqlTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
+    type: mysqlEnum("type", ["income", "expense", "transfer"]),
+    category: varchar("category", { length: maxCategoryLen }),
   },
   (table) => ({
     summaryIdx: index("summary_idx").on(table.summary),
+    typeIdx: index("type_idx").on(table.type),
+    categoryIdx: index("category_idx").on(table.category),
     uniquePublicId: uniqueIndex("unique_public_id").on(table.publicId),
   }),
 );
