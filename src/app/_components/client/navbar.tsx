@@ -6,12 +6,12 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
 import Link from "next/link";
+import { useClerk } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
+  { name: "Dashboard", href: "/" },
+  { name: "Calendar", href: "/calendar" },
 ];
 
 function classNames(...classes: string[]) {
@@ -19,6 +19,10 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar() {
+  const { signOut } = useClerk();
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -45,12 +49,16 @@ export default function Navbar() {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current
+                          pathname !== null && pathname === item.href
                             ? "bg-gray-900 text-white"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "rounded-md px-3 py-2 text-sm font-medium",
                         )}
-                        aria-current={item.current ? "page" : undefined}
+                        aria-current={
+                          pathname !== null && pathname === item.href
+                            ? "page"
+                            : undefined
+                        }
                       >
                         {item.name}
                       </Link>
@@ -121,15 +129,17 @@ export default function Navbar() {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <Link
-                            href="#"
+                          <button
                             className={classNames(
                               active ? "bg-gray-600" : "",
-                              "block px-4 py-2 text-sm text-gray-200",
+                              "block w-full px-4 py-2 text-left text-sm text-gray-200",
                             )}
+                            onClick={() =>
+                              signOut(() => router.push("/sign-in"))
+                            }
                           >
                             Sign out
-                          </Link>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>
@@ -147,12 +157,16 @@ export default function Navbar() {
                   as={Link}
                   href={item.href}
                   className={classNames(
-                    item.current
+                    pathname !== null && pathname === item.href
                       ? "bg-gray-900 text-white"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white",
                     "block rounded-md px-3 py-2 text-base font-medium",
                   )}
-                  aria-current={item.current ? "page" : undefined}
+                  aria-current={
+                    pathname !== null && pathname === item.href
+                      ? "page"
+                      : undefined
+                  }
                 >
                   {item.name}
                 </Disclosure.Button>
