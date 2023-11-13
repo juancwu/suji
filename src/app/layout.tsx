@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import Navbar from "@/app/_components/client/navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
     <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en" className="h-full w-full">
         <body className={`h-full w-full font-sans ${inter.variable}`}>
+          <Navbar />
           <TRPCReactProvider cookies={cookies().toString()}>
             {children}
           </TRPCReactProvider>
