@@ -50,7 +50,8 @@ export const accounts = mysqlTable(
   "accounts",
   {
     internalId: int("internal_id").primaryKey().autoincrement(),
-    name: varchar("name", { length: maxAccountNameLen }),
+    name: varchar("name", { length: maxAccountNameLen }).notNull(),
+    initial: char("initial", { length: 1 }).notNull(),
     userInternalId: int("user_internal_id"),
     publicId: char("public_id", { length: publicIdLen }).notNull(),
     createdAt: timestamp("created_at")
