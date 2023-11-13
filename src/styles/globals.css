@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply bg-white;
+  }
+
   html,
   body {
-    @apply bg-zinc-950;
+    @apply h-full;
   }
 }
