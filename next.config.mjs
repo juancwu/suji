@@ -10,12 +10,7 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "tailwindui.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "img.clerk.com",
         pathname: "/**",
       },
     ],

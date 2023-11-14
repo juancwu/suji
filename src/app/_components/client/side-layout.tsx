@@ -15,9 +15,9 @@ import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
-import Image from "next/image";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
@@ -353,7 +353,9 @@ export default function SideLayout({ accounts, children }: SideLayoutProps) {
                     <Menu.Button className="-m-1.5 flex items-center p-1.5">
                       <span className="sr-only">Open user menu</span>
                       {user.hasImage && (
-                        <img
+                        <Image
+                          width={32}
+                          height={32}
                           className="h-8 w-8 rounded-full bg-gray-50"
                           src={user.imageUrl}
                           alt=""
