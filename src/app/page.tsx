@@ -1,12 +1,37 @@
-import SideLayout from "./_components/client/side-layout";
+import { currentUser } from "@clerk/nextjs";
+import SideLayout from "./_components/client/side-layout/side-layout";
+import { redirect } from "next/navigation";
+import { db } from "@/server/db";
+import { accounts as accountsTable } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import { DesktopSidebar } from "./_components/server/desktop-sidebar";
 
-export default function Dashboard() {
-  // TODO: query accounts from database
-  const accounts = [
-    { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-    { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-    { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-  ];
+export default async function Dashboard() {
+  const user = await currentUser();
 
-  return <SideLayout accounts={accounts}>some content</SideLayout>;
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  const accounts = await db
+    .select({
+      publicId: accountsTable.publicId,
+      name: accountsTable.name,
+      initial: accountsTable.initial,
+    })
+    .from(accountsTable)
+    .where(eq(accountsTable.userExternalId, user.id));
+
+  return (
+    <>
+      {/* Static sidebar for desktop */}
+      <DesktopSidebar accounts={accounts} />
+      <SideLayout
+        user={{ username: user.username, imageUrl: user.imageUrl }}
+        accounts={accounts}
+      >
+        some content
+      </SideLayout>
+    </>
+  );
 }

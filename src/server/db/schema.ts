@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { relations, sql } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 import {
   char,
   datetime,
@@ -42,7 +42,7 @@ export const users = mysqlTable(
     updatedAt: timestamp("updated_at").onUpdateNow(),
   },
   (table) => ({
-    externalIdIdx: index("external_id_idx").on(table.externalId),
+    externalIdIdx: uniqueIndex("external_id_idx").on(table.externalId),
   }),
 );
 
@@ -52,7 +52,7 @@ export const accounts = mysqlTable(
     internalId: int("internal_id").primaryKey().autoincrement(),
     name: varchar("name", { length: maxAccountNameLen }).notNull(),
     initial: char("initial", { length: 1 }).notNull(),
-    userInternalId: int("user_internal_id"),
+    userExternalId: varchar("user_external_id", { length: 255 }),
     publicId: char("public_id", { length: publicIdLen }).notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
@@ -61,10 +61,12 @@ export const accounts = mysqlTable(
     categories: json("categories").$type<string[]>().default([]),
   },
   (table) => ({
-    nameIdx: uniqueIndex("name_idx").on(table.name, table.userInternalId),
+    nameIdx: uniqueIndex("name_idx").on(table.name, table.userExternalId),
     uniquePublicId: uniqueIndex("unique_public_id").on(table.publicId),
   }),
 );
+
+export type AccountsTable = InferSelectModel<typeof accounts>;
 
 export const insertAccountSchema = createInsertSchema(accounts, {
   categories: z.array(z.string().min(1).max(maxCategoryLen)),
@@ -77,7 +79,7 @@ export const transactions = mysqlTable(
     summary: varchar("summary", { length: maxSummaryLen }).notNull(),
     details: text("details"),
     publicId: char("public_id", { length: publicIdLen }).notNull(),
-    userInternalId: int("user_internal_id"),
+    userExternalId: varchar("user_external_id", { length: 255 }),
     accountInternalId: int("account_internal_id"),
     date: datetime("date").notNull(),
     createdAt: timestamp("created_at")
