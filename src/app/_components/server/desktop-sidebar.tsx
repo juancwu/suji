@@ -34,8 +34,8 @@ export type DesktopSidebarProps = {
 const appTitle = "SUJI.";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
+  { name: "Calendar", href: "/calendar", icon: CalendarIcon, current: false },
   { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
 ];
 
@@ -56,7 +56,7 @@ export function DesktopSidebar({ accounts }: DesktopSidebarProps) {
               <ul role="list" className="-mx-2 space-y-1">
                 {navigation.map((item) => (
                   <li key={item.name}>
-                    <a
+                    <Link
                       href={item.href}
                       className={classNames(
                         // item.current
@@ -77,7 +77,7 @@ export function DesktopSidebar({ accounts }: DesktopSidebarProps) {
                         aria-hidden="true"
                       />
                       {item.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

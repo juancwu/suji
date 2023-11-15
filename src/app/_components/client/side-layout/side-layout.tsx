@@ -18,12 +18,13 @@ import {
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import type { AccountsTable } from "@/server/db/schema";
 import { Accounts } from "@/app/_components/client/side-layout/accounts";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
+  { name: "Calendar", href: "/calendar", icon: CalendarIcon, current: false },
   { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
 ];
 
@@ -135,7 +136,7 @@ export default function SideLayout({
                           <ul role="list" className="-mx-2 space-y-1">
                             {navigation.map((item) => (
                               <li key={item.name}>
-                                <a
+                                <Link
                                   href={item.href}
                                   className={classNames(
                                     // item.current
@@ -156,7 +157,7 @@ export default function SideLayout({
                                     aria-hidden="true"
                                   />
                                   {item.name}
-                                </a>
+                                </Link>
                               </li>
                             ))}
                           </ul>
