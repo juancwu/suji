@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import type { AccountsTable } from "@/server/db/schema";
-import { Accounts } from "@/app/_components/client/side-layout/accounts";
+import { Accounts } from "@/app/_components/side-layout/accounts.client";
 
 export type Navigation = {
   name: string;
@@ -43,7 +43,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function DesktopSidebar({ accounts }: DesktopSidebarProps) {
+export default function DesktopSidebar({ accounts }: DesktopSidebarProps) {
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">

@@ -1,10 +1,10 @@
 import { currentUser } from "@clerk/nextjs";
-import SideLayout from "./_components/client/side-layout/side-layout";
 import { redirect } from "next/navigation";
 import { db } from "@/server/db";
 import { accounts as accountsTable } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { DesktopSidebar } from "./_components/server/desktop-sidebar";
+import SideLayout from "@/app/_components/side-layout/side-layout.client";
+import DesktopSidebar from "@/app/_components/side-layout/desktop-sidebar.server";
 
 export default async function Dashboard() {
   const user = await currentUser();

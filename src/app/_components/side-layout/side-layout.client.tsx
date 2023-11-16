@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { AccountsTable } from "@/server/db/schema";
-import { Accounts } from "@/app/_components/client/side-layout/accounts";
+import { Accounts } from "@/app/_components/side-layout/accounts.client";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
