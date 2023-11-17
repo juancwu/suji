@@ -7,6 +7,8 @@ import SideLayout from "@/app/_components/side-layout/side-layout.client";
 import DesktopSidebar from "@/app/_components/side-layout/desktop-sidebar.server";
 import SectionHeading from "@/app/_components/section-heading.server";
 import AccountCard from "@/app/_components/account-card.server";
+import Link from "next/link";
+import { getButtonStyles } from "./_styles/button.styles";
 
 export default async function Dashboard() {
   const user = await currentUser();
@@ -34,7 +36,11 @@ export default async function Dashboard() {
       >
         <section>
           <SectionHeading heading="Accounts" />
-          <div className="h-5" aria-hidden="true"></div>
+          <div className="py-5">
+            <Link href="#" className={getButtonStyles()}>
+              Create Account
+            </Link>
+          </div>
           <ul
             role="list"
             className="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8"
