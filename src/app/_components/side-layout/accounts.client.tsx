@@ -8,7 +8,7 @@ type AccountsProps = {
   accounts: Pick<AccountsTable, "name" | "publicId" | "initial">[];
 };
 
-export function Accounts({ accounts }: AccountsProps) {
+export default function AccountList({ accounts }: AccountsProps) {
   const pathname = usePathname();
 
   return (

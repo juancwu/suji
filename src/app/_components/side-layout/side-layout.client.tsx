@@ -6,9 +6,6 @@ import {
   Bars3Icon,
   BellIcon,
   Cog6ToothIcon,
-  HomeIcon,
-  CalendarIcon,
-  ChartPieIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -18,42 +15,20 @@ import {
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import type { AccountsTable } from "@/server/db/schema";
-import { Accounts } from "@/app/_components/side-layout/accounts.client";
 
-const navigation = [
-  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
-  { name: "Calendar", href: "/calendar", icon: CalendarIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
-];
+import AccountList from "@/app/_components/side-layout/accounts.client";
+import Navigation from "@/app/_components/side-layout/navigation.client";
 
-const userNavigation = [{ name: "Your profile", href: "#" }];
+import { appTitle } from "@/app/_components/side-layout/constants";
+import { classNames } from "@/app/_utils";
 
-const appTitle = "SUJI.";
+import type {
+  User,
+  UserNavigation,
+  Account,
+} from "@/app/_components/side-layout/types";
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export type Navigation = {
-  name: string;
-  href: string;
-  icon: React.ReactNode;
-  current: boolean;
-};
-
-export type UserNavigation = {
-  name: string;
-  href: string;
-};
-
-export type Account = Pick<AccountsTable, "publicId" | "name" | "initial">;
-
-export type User = {
-  imageUrl: string;
-  username: string | null;
-};
+const userNavigation: UserNavigation[] = [{ name: "Your profile", href: "#" }];
 
 export type SideLayoutProps = {
   user: User;
@@ -133,37 +108,10 @@ export default function SideLayout({
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
-                          <ul role="list" className="-mx-2 space-y-1">
-                            {navigation.map((item) => (
-                              <li key={item.name}>
-                                <Link
-                                  href={item.href}
-                                  className={classNames(
-                                    // item.current
-                                    //   ? "bg-gray-50 text-indigo-600"
-                                    //   : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                                    "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                                    "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
-                                  )}
-                                >
-                                  <item.icon
-                                    className={classNames(
-                                      // item.current
-                                      //   ? "text-indigo-600"
-                                      //   : "text-gray-400 group-hover:text-indigo-600",
-                                      "text-gray-400 group-hover:text-indigo-600",
-                                      "h-6 w-6 shrink-0",
-                                    )}
-                                    aria-hidden="true"
-                                  />
-                                  {item.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
+                          <Navigation />
                         </li>
                         <li>
-                          <Accounts accounts={accounts} />
+                          <AccountList accounts={accounts} />
                         </li>
                         <li className="mt-auto">
                           <a
