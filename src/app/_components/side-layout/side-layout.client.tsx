@@ -15,6 +15,7 @@ import {
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 import AccountList from "@/app/_components/side-layout/accounts.client";
 import Navigation from "@/app/_components/side-layout/navigation.client";
@@ -228,7 +229,7 @@ export default function SideLayout({
                         {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
-                              <a
+                              <Link
                                 href={item.href}
                                 className={classNames(
                                   active ? "bg-gray-50" : "",
@@ -236,7 +237,7 @@ export default function SideLayout({
                                 )}
                               >
                                 {item.name}
-                              </a>
+                              </Link>
                             )}
                           </Menu.Item>
                         ))}
