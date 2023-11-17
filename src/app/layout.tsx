@@ -20,8 +20,10 @@ export const metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   return (
     <ClerkProvider appearance={{ baseTheme: dark }}>
@@ -29,6 +31,7 @@ export default function RootLayout({
         <body className={`h-full w-full font-sans ${inter.variable}`}>
           <TRPCReactProvider cookies={cookies().toString()}>
             {children}
+            {modal}
           </TRPCReactProvider>
         </body>
       </html>

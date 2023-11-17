@@ -52,7 +52,7 @@ export default function SideLayout({
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
-            className="relative z-50 lg:hidden"
+            className="relative z-10 lg:hidden"
             onClose={setSidebarOpen}
           >
             <Transition.Child
@@ -136,7 +136,7 @@ export default function SideLayout({
         </Transition.Root>
 
         <div className="lg:pl-72">
-          <div className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
+          <div className="sticky top-0 z-10 lg:mx-auto lg:max-w-7xl lg:px-8">
             <div className="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none">
               <button
                 type="button"

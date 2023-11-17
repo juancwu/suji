@@ -37,7 +37,7 @@ export default async function Dashboard() {
         <section>
           <SectionHeading heading="Accounts" />
           <div className="py-5">
-            <Link href="#" className={getButtonStyles()}>
+            <Link href="/new-account" className={getButtonStyles()}>
               Create Account
             </Link>
           </div>
