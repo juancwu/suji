@@ -3,7 +3,7 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 // Custom components
-import AccountList from "@/app/_components/side-layout/accounts.client";
+import AccountList from "@/app/_components/side-layout/account-list.client";
 import Navigation from "@/app/_components/side-layout/navigation.client";
 
 // Constants

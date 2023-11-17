@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-import AccountList from "@/app/_components/side-layout/accounts.client";
+import AccountList from "@/app/_components/side-layout/account-list.client";
 import Navigation from "@/app/_components/side-layout/navigation.client";
 
 import { appTitle } from "@/app/_components/side-layout/constants";
