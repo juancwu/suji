@@ -1,12 +1,14 @@
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
-import AccountCardControl from "@/app/_components/account-control.client";
+import Link from "next/link";
+
 import { classNames } from "@/app/_utils";
 import type { Account } from "@/app/_components/side-layout/types";
 
 export const statuses = {
-  Paid: "text-green-700 bg-green-50 ring-green-600/20",
-  Withdraw: "text-gray-600 bg-gray-50 ring-gray-500/10",
-  Overdue: "text-red-700 bg-red-50 ring-red-600/10",
+  Income: "text-green-700 bg-green-50 ring-green-600/20",
+  Transfer: "text-gray-600 bg-gray-50 ring-gray-500/10",
+  Expense: "text-red-700 bg-red-50 ring-red-600/10",
+  Negative: "text-red-700 bg-red-50 ring-red-600/10",
 };
 
 export default function AccountCard({ account }: { account: Account }) {
@@ -17,7 +19,14 @@ export default function AccountCard({ account }: { account: Account }) {
         <div className="text-sm font-medium leading-6 text-gray-900">
           {account.name}
         </div>
-        <AccountCardControl publicId={account.publicId} name={account.name} />
+        <div className="ml-auto">
+          <Link
+            href={`#${account.publicId}`}
+            className="-m-2.5 block p-2.5 font-semibold text-indigo-500 hover:underline"
+          >
+            Manage
+          </Link>
+        </div>
       </div>
       <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
         <div className="flex justify-between gap-x-4 py-3">
@@ -32,12 +41,18 @@ export default function AccountCard({ account }: { account: Account }) {
             <div className="font-medium text-gray-900">{"$2,000.32"}</div>
             <div
               className={classNames(
-                statuses.Paid,
+                statuses.Income,
                 "rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
               )}
             >
-              Paid
+              Income
             </div>
+          </dd>
+        </div>
+        <div className="flex justify-between gap-x-4 py-3">
+          <dt className="text-gray-500">In Account</dt>
+          <dd className="flex items-start gap-x-2">
+            <div className="font-medium text-green-700">{`+ $2,000.32`}</div>
           </dd>
         </div>
       </dl>
