@@ -10,6 +10,7 @@ import {
   json,
   mysqlEnum,
   mysqlTableCreator,
+  real,
   text,
   timestamp,
   uniqueIndex,
@@ -59,6 +60,7 @@ export const accounts = mysqlTable(
       .notNull(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
     categories: json("categories").$type<string[]>().default([]),
+    amount: real("amount").notNull().default(0),
   },
   (table) => ({
     nameIdx: uniqueIndex("name_idx").on(table.name, table.userExternalId),
