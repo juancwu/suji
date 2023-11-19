@@ -19,10 +19,10 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-const maxCategoryLen = 50;
-const maxSummaryLen = 50;
-const maxAccountNameLen = 50;
-const publicIdLen = 16;
+export const maxCategoryLen = 50;
+export const maxSummaryLen = 50;
+export const maxAccountNameLen = 50;
+export const publicIdLen = 16;
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same

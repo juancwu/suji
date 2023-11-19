@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEventHandler, useRef } from "react";
+import { type FormEventHandler, useRef, type FormEvent } from "react";
 import { Dialog } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
@@ -14,14 +14,20 @@ export default function NewAccountModal() {
 
   const handleClose = () => router.back();
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    const target = e.target as EventTarget & {
-      "account-name": HTMLInputElement;
-      "initial-amount": HTMLInputElement;
+    const post = async (evt: FormEvent<HTMLFormElement>) => {
+      const formData = new FormData(evt.target as HTMLFormElement);
+      console.log(formData);
+      const res = await fetch("/api/account/create", {
+        method: "POST",
+        body: formData,
+      });
+      const body = await res.text();
+      return body;
     };
-    const accountName = target["account-name"].value;
-    const initialAmount = target["initial-amount"].value;
+
+    post(e).then(console.log).catch(console.error);
   };
 
   return (
@@ -55,14 +61,14 @@ export default function NewAccountModal() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <Input
                 label="Account Name"
-                name="account-name"
+                name="name"
                 type="text"
                 placeholder="Money"
                 required
               />
               <MoneyInput
                 label="Initial Amount"
-                name="initial-amount"
+                name="amount"
                 placeholder="0.00"
                 unit="CAD"
                 sign="$"
