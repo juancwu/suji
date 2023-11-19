@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { getButtonStyles } from "@/app/_styles/button.styles";
 import Input from "@/app/_components/input.server";
 import MoneyInput from "@/app/_components/money-input.server";
-import { api } from "@/trpc/server";
 
 export default function NewAccountModal() {
   const cancelButtonRef = useRef(null);
@@ -17,7 +16,12 @@ export default function NewAccountModal() {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    console.log(e);
+    const target = e.target as EventTarget & {
+      "account-name": HTMLInputElement;
+      "initial-amount": HTMLInputElement;
+    };
+    const accountName = target["account-name"].value;
+    const initialAmount = target["initial-amount"].value;
   };
 
   return (
