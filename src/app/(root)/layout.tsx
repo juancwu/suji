@@ -10,18 +10,13 @@ import type { Account, User } from "@/app/_components/side-layout/types";
 
 interface LayoutInterface {
   children: React.ReactNode;
-  modal: React.ReactNode;
   params: {
     user: User;
     accounts: Account[];
   };
 }
 
-export default async function Layout({
-  children,
-  modal,
-  params,
-}: LayoutInterface) {
+export default async function Layout({ children, params }: LayoutInterface) {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
 
@@ -46,7 +41,6 @@ export default async function Layout({
       >
         {children}
       </SideLayout>
-      {modal}
     </>
   );
 }

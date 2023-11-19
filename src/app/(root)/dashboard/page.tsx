@@ -1,7 +1,6 @@
 import SectionHeading from "@/app/_components/section-heading.server";
 import AccountCard from "@/app/_components/account-card.server";
-import Link from "next/link";
-import { getButtonStyles } from "@/app/_styles/button.styles";
+import NewAccountModal from "./NewAccountModal.client";
 import type { Account, User } from "@/app/_components/side-layout/types";
 
 export default function Dashboard({
@@ -13,9 +12,7 @@ export default function Dashboard({
     <section>
       <SectionHeading heading="Accounts" />
       <div className="py-5">
-        <Link href="/new-account" className={getButtonStyles()}>
-          Create Account
-        </Link>
+        <NewAccountModal />
       </div>
       <ul
         role="list"
