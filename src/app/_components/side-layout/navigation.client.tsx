@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 import { classNames } from "@/app/_utils";
 
 export const navigation = [
-  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
+  { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
   { name: "Calendar", href: "/calendar", icon: CalendarIcon, current: false },
   { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
 ];
@@ -25,7 +25,7 @@ export default function Navigation() {
           <Link
             href={item.href}
             className={classNames(
-              pathname === item.href
+              pathname.includes(item.href)
                 ? "bg-gray-50 text-indigo-600"
                 : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
               "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
@@ -33,7 +33,7 @@ export default function Navigation() {
           >
             <item.icon
               className={classNames(
-                pathname === item.href
+                pathname.includes(item.href)
                   ? "text-indigo-600"
                   : "text-gray-400 group-hover:text-indigo-600",
                 "text-gray-400 group-hover:text-indigo-600",
