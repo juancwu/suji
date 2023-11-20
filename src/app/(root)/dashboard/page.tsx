@@ -1,6 +1,6 @@
 import SectionHeading from "@/app/_components/section-heading.server";
 import AccountCard from "@/app/_components/account-card.server";
-import NewAccountModal from "./NewAccountModal.client";
+import NewAccountModal from "./new-account-modal.client";
 import type { Account, User } from "@/app/_components/side-layout/types";
 
 export default function Dashboard({

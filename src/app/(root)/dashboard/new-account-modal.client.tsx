@@ -1,45 +1,53 @@
 "use client";
 
 import { Fragment, useRef, useState } from "react";
-import type { FormEventHandler, FormEvent } from "react";
+import type { FormEventHandler } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { getButtonStyles } from "@/app/_styles/button.styles";
 import Input from "@/app/_components/input.server";
 import MoneyInput from "@/app/_components/money-input.server";
+import LoadingSVG from "@/app/_components/loading-svg.server";
 
 export default function NewAccountModal() {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  // eslint-disable-next-line
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    const post = async (evt: FormEvent<HTMLFormElement>) => {
-      const formData = new FormData(evt.target as HTMLFormElement);
+    const formData = new FormData(e.target as HTMLFormElement);
+    try {
+      setLoading(true);
       const res = await fetch("/api/account/create", {
         method: "POST",
         body: formData,
       });
-      const body = await res.text();
+      await res.text();
 
       if (res.status !== 201) {
-        return body;
+        return;
       }
 
       router.refresh();
       setOpen(false);
-
-      return "";
-    };
-
-    post(e).then(console.log).catch(console.error);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className={getButtonStyles()}>
+      <button
+        onClick={() => setOpen(true)}
+        className={getButtonStyles()}
+        disabled={loading}
+      >
         Create Account
       </button>
       <Transition.Root show={open} as={Fragment}>
@@ -96,6 +104,7 @@ export default function NewAccountModal() {
                       type="text"
                       placeholder="Money"
                       required
+                      disabled={loading}
                     />
                     <MoneyInput
                       label="Initial Amount"
@@ -104,6 +113,7 @@ export default function NewAccountModal() {
                       unit="CAD"
                       sign="$"
                       inputMode="numeric"
+                      disabled={loading}
                     />
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                       <button
@@ -112,8 +122,10 @@ export default function NewAccountModal() {
                           className:
                             "inline-flex w-full justify-center sm:col-start-2",
                         })}
+                        disabled={loading}
                       >
-                        Create
+                        {loading && <LoadingSVG />}
+                        {loading ? "Creating..." : "Create"}
                       </button>
                       <button
                         type="button"
@@ -124,6 +136,7 @@ export default function NewAccountModal() {
                         })}
                         onClick={() => setOpen(false)}
                         ref={cancelButtonRef}
+                        disabled={loading}
                       >
                         Cancel
                       </button>
