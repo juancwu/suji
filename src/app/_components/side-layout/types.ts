@@ -12,7 +12,10 @@ export type UserNavigation = {
   href: string;
 };
 
-export type Account = Pick<AccountsTable, "publicId" | "name" | "initial">;
+export type Account = Pick<
+  AccountsTable,
+  "publicId" | "name" | "initial" | "amount"
+>;
 
 export type User = {
   imageUrl: string;

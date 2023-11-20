@@ -28,12 +28,13 @@ import type {
   UserNavigation,
   Account,
 } from "@/app/_components/side-layout/types";
+import type { Transaction } from "@/app/(root)/layout";
 
 const userNavigation: UserNavigation[] = [{ name: "Your profile", href: "#" }];
 
 export type SideLayoutProps = {
   user: User;
-  accounts: Account[];
+  accounts: (Account & { transactions: Transaction[] })[];
   children?: React.ReactNode;
 };
 

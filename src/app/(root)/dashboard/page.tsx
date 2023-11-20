@@ -2,11 +2,15 @@ import SectionHeading from "@/app/_components/section-heading.server";
 import AccountCard from "@/app/_components/account-card.server";
 import NewAccountModal from "./new-account-modal.client";
 import type { Account, User } from "@/app/_components/side-layout/types";
+import { Transaction } from "../layout";
 
 export default function Dashboard({
   params,
 }: {
-  params: { accounts: Account[]; user: User };
+  params: {
+    accounts: (Account & { transactions: Transaction[] })[];
+    user: User;
+  };
 }) {
   return (
     <section>

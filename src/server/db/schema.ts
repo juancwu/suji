@@ -10,7 +10,7 @@ import {
   json,
   mysqlEnum,
   mysqlTableCreator,
-  real,
+  double,
   text,
   timestamp,
   uniqueIndex,
@@ -60,7 +60,7 @@ export const accounts = mysqlTable(
       .notNull(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
     categories: json("categories").$type<string[]>().default([]),
-    amount: real("amount").notNull().default(0),
+    amount: double("amount").notNull().default(0),
   },
   (table) => ({
     nameIdx: uniqueIndex("name_idx").on(table.name, table.userExternalId),
@@ -90,6 +90,7 @@ export const transactions = mysqlTable(
     updatedAt: timestamp("updated_at").onUpdateNow(),
     type: mysqlEnum("type", ["income", "expense", "transfer"]),
     category: varchar("category", { length: maxCategoryLen }),
+    amount: double("amount").notNull().default(0),
   },
   (table) => ({
     summaryIdx: index("summary_idx").on(table.summary),
@@ -99,10 +100,13 @@ export const transactions = mysqlTable(
   }),
 );
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-}));
-
 export const accountsRelations = relations(accounts, ({ many }) => ({
   transactions: many(transactions),
+}));
+
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  account: one(accounts, {
+    fields: [transactions.accountInternalId],
+    references: [accounts.internalId],
+  }),
 }));
