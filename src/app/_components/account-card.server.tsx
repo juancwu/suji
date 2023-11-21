@@ -6,9 +6,9 @@ import type { Account } from "@/app/_components/side-layout/types";
 
 export const statuses = {
   income: "text-green-700 bg-green-50 ring-green-600/20",
-  transfer: "text-gray-600 bg-gray-50 ring-gray-500/10",
+  transfer: "text-yellow-600 bg-yellow-50 ring-yellow-600/10",
   expense: "text-red-700 bg-red-50 ring-red-600/10",
-  neutral: "",
+  neutral: "text-gray-700 bg-gray-50 ring-gray-600/10",
 };
 
 function formatCurrency(value: number, noSign = false) {
@@ -18,7 +18,7 @@ function formatCurrency(value: number, noSign = false) {
 
   numStr = parts.join(".");
 
-  const sign = !noSign ? (value < 0 ? "-" : "+") : "";
+  const sign = !noSign ? (value < 0 ? "-" : value > 0 ? "+" : "") : "";
 
   return `${sign}\$${numStr}`;
 }
@@ -32,6 +32,10 @@ type Transaction = {
 type AccountProp = Account & { transactions: Transaction[] };
 
 export default function AccountCard({ account }: { account: AccountProp }) {
+  const year = account.transactions[0]!.date.getFullYear();
+  const month = account.transactions[0]!.date.getMonth() + 1;
+  const day = account.transactions[0]!.date.getDate();
+
   return (
     <>
       <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
@@ -52,8 +56,16 @@ export default function AccountCard({ account }: { account: AccountProp }) {
         <div className="flex justify-between gap-x-4 py-3">
           <dt className="text-gray-500">Last transaction</dt>
           <dd className="text-gray-700">
-            <time dateTime={account.transactions[0]!.date.toDateString()}>
-              {account.transactions[0]!.date.toDateString()}
+            <time
+              dateTime={`${year}-${month.toString().padStart(2, "0")}-${day
+                .toString()
+                .padStart(2, "0")}`}
+            >
+              {account.transactions[0]!.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </time>
           </dd>
         </div>
@@ -61,16 +73,15 @@ export default function AccountCard({ account }: { account: AccountProp }) {
           <dt className="text-gray-500">Amount</dt>
           <dd className="flex items-start gap-x-2">
             <div className="font-medium text-gray-900">
-              {/* TODO: format money */}
               {formatCurrency(account.transactions[0]?.amount ?? 0, true)}
             </div>
             <div
               className={classNames(
-                statuses[account.transactions[0]?.type ?? "neutral"],
-                "rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset",
+                statuses[account.transactions[0]!.type ?? "neutral"],
+                "rounded-md px-2 py-1 text-xs font-medium capitalize ring-1 ring-inset",
               )}
             >
-              {account.transactions[0]?.type?.toUpperCase()}
+              {account.transactions[0]!.type ?? "neutral"}
             </div>
           </dd>
         </div>
@@ -79,7 +90,11 @@ export default function AccountCard({ account }: { account: AccountProp }) {
           <dd className="flex items-start gap-x-2">
             <div
               className={`font-medium ${
-                account.amount < 0 ? "text-red-600" : "text-green-600"
+                account.amount < 0
+                  ? "text-red-600"
+                  : account.amount > 0
+                  ? "text-green-600"
+                  : "text-gray-700"
               }`}
             >
               {formatCurrency(account.amount)}
