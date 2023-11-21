@@ -9,6 +9,8 @@ import { getButtonStyles } from "@/app/_styles/button.styles";
 import Input from "@/app/_components/input.server";
 import MoneyInput from "@/app/_components/money-input.server";
 import LoadingSVG from "@/app/_components/loading-svg.server";
+import { Errors as CreateAccountErrors } from "@/app/api/account/create/create-account-errors";
+import { showNotification } from "@/app/_components/notifications/notifications.utils";
 
 export default function NewAccountModal() {
   const [open, setOpen] = useState(false);
@@ -26,9 +28,26 @@ export default function NewAccountModal() {
         method: "POST",
         body: formData,
       });
-      await res.text();
 
-      if (res.status !== 201) {
+      // TODO: show notifications or error messages on input fields
+      if (res.status >= 400) {
+        const json = (await res.json()) as { error: number };
+        if (json.error === CreateAccountErrors.InvalidAccountName) {
+          showNotification({
+            title: "Invalid Account Name",
+            details: "The account name you have entered is not valid.",
+          });
+        } else if (json.error === CreateAccountErrors.InvalidAccountAmount) {
+          showNotification({
+            title: "Invalid Initial Amount",
+            details: "Initial amount must be a valid number.",
+          });
+        } else if (json.error === CreateAccountErrors.AccountNameTaken) {
+          showNotification({
+            title: "Duplicate Account Name",
+            details: "You already with the same name.",
+          });
+        }
         return;
       }
 

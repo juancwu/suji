@@ -4,6 +4,8 @@ import { maxAccountNameLen, publicIdLen } from "@/server/db/schema";
 import { db } from "@/server/db";
 import { accounts } from "@/server/db/schema";
 import { nanoid } from "nanoid";
+import { StatusCodes } from "@/app/api/status-codes";
+import { Errors } from "./create-account-errors";
 
 export async function POST(req: Request) {
   const { userId } = auth();
@@ -24,12 +26,18 @@ export async function POST(req: Request) {
       .max(maxAccountNameLen)
       .parseAsync(form.get("name"));
   } catch (error) {
-    return new Response("bad name", { status: 400 });
+    return Response.json(
+      { error: Errors.InvalidAccountName },
+      { status: StatusCodes.BadRequest },
+    );
   }
   try {
     amount = await z.coerce.number().parseAsync(form.get("amount"));
   } catch (error) {
-    return new Response("bad amount", { status: 400 });
+    return Response.json(
+      { error: Errors.InvalidAccountAmount },
+      { status: StatusCodes.BadRequest },
+    );
   }
 
   try {
@@ -40,8 +48,30 @@ export async function POST(req: Request) {
       userExternalId: userId,
       initial: name[0]!.toUpperCase(),
     });
-    return new Response("new account created", { status: 201 });
+    return Response.json(
+      { message: "new account created" },
+      { status: StatusCodes.Created },
+    );
   } catch (error) {
-    return new Response("could not create new account", { status: 500 });
+    if (error instanceof Error) {
+      if (error.name === "DatabaseError") {
+        if (error.message.includes("AlreadyExists")) {
+          return Response.json(
+            { error: Errors.AccountNameTaken },
+            { status: StatusCodes.BadRequest },
+          );
+        }
+        return Response.json(
+          { error: Errors.DatabaseError },
+          { status: StatusCodes.BadRequest },
+        );
+      }
+    }
+    return Response.json(
+      { message: "could not create new account" },
+      {
+        status: StatusCodes.InternalServerError,
+      },
+    );
   }
 }
