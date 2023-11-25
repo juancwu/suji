@@ -34,7 +34,10 @@ export default async function AccountPage({ params }: AccountPageProps) {
         <div className="pt-5">
           <NewTransactionModal accountPublidId={account.publicId} />
         </div>
-        <Transactions accountInternalId={account.internalId} />
+        {!account.transactions.length && "No transactions"}
+        {account.transactions.length > 0 && (
+          <Transactions accountInternalId={account.internalId} />
+        )}
       </section>
     </SideLayout>
   );

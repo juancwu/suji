@@ -6,11 +6,13 @@ import {
   publicIdLen,
   transactionTypes,
   transactions,
+  accounts,
 } from "@/server/db/schema";
 import { db } from "@/server/db";
 import { nanoid } from "nanoid";
 import { StatusCodes } from "@/app/api/status-codes";
 import { Errors } from "@/app/api/account/create/create-account-errors";
+import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
   const { userId } = auth();
@@ -43,7 +45,6 @@ export async function POST(req: Request) {
   }
   try {
     amount = await z.coerce.number().parseAsync(form.get("amount"));
-    console.log(amount);
   } catch (error) {
     return Response.json(
       // TODO: update error message
@@ -111,6 +112,7 @@ export async function POST(req: Request) {
       where: (t, { eq }) => eq(t.publicId, accountPublicId),
       columns: {
         internalId: true,
+        amount: true,
       },
     });
     if (!account) {
@@ -120,16 +122,24 @@ export async function POST(req: Request) {
       );
     }
 
-    await db.insert(transactions).values({
-      summary,
-      amount,
-      details,
-      type: transactionType,
-      date: new Date(date),
-      publicId: nanoid(publicIdLen),
-      userExternalId: userId,
-      accountInternalId: account.internalId,
+    await db.transaction(async (tx) => {
+      await tx.insert(transactions).values({
+        summary,
+        amount,
+        details,
+        type: transactionType,
+        date: new Date(date),
+        publicId: nanoid(publicIdLen),
+        userExternalId: userId,
+        accountInternalId: account.internalId,
+      });
+
+      await tx
+        .update(accounts)
+        .set({ amount: account.amount + amount })
+        .where(eq(accounts.internalId, account.internalId));
     });
+
     return Response.json(
       { message: "new transaction created" },
       { status: StatusCodes.Created },
