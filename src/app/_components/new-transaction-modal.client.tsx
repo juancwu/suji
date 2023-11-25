@@ -4,54 +4,47 @@ import { Fragment, useRef, useState } from "react";
 import type { FormEventHandler } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
 import { getButtonStyles } from "@/app/_styles/button.styles";
 import Input from "@/app/_components/input.server";
 import MoneyInput from "@/app/_components/money-input.server";
 import LoadingSVG from "@/app/_components/loading-svg.server";
-import { Errors as CreateAccountErrors } from "@/app/api/account/create/create-account-errors";
-import { showNotification } from "@/app/_components/notifications/notifications.utils";
+import { maxSummaryLen } from "@/server/db/schema";
+import { showNotification } from "./notifications/notifications.utils";
+import { useRouter } from "next/navigation";
 
-export default function NewAccountModal() {
+export interface NewTransactionModalProps {
+  accountPublidId: string;
+}
+
+export default function NewTransactionModal({
+  accountPublidId,
+}: NewTransactionModalProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
-  // eslint-disable-next-line
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await fetch("/api/account/create", {
+      const formData = new FormData(e.target as HTMLFormElement);
+      formData.append("accountPublicId", accountPublidId);
+      const res = await fetch("/api/transaction", {
         method: "POST",
         body: formData,
       });
-
       if (res.status >= 400) {
-        const json = (await res.json()) as { error: number };
-        if (json.error === CreateAccountErrors.InvalidAccountName) {
-          showNotification({
-            title: "Invalid Account Name",
-            details: "The account name you have entered is not valid.",
-          });
-        } else if (json.error === CreateAccountErrors.InvalidAccountAmount) {
-          showNotification({
-            title: "Invalid Initial Amount",
-            details: "Initial amount must be a valid number.",
-          });
-        } else if (json.error === CreateAccountErrors.AccountNameTaken) {
-          showNotification({
-            title: "Duplicate Account Name",
-            details: "You already with the same name.",
-          });
-        }
-        return;
+        showNotification({
+          title: "Could not add transaction",
+        });
+      } else if (res.status === 201) {
+        showNotification({
+          title: "Transaction successfully added!",
+        });
+        setOpen(false);
+        router.refresh();
       }
-
-      router.refresh();
-      setOpen(false);
     } catch (error) {
       console.error(error);
     } finally {
@@ -66,7 +59,7 @@ export default function NewAccountModal() {
         className={getButtonStyles()}
         disabled={loading}
       >
-        Create Account
+        Add Transaction
       </button>
       <Transition.Root show={open} as={Fragment}>
         <Dialog
@@ -111,27 +104,83 @@ export default function NewAccountModal() {
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        Create Account
+                        Add New Transaction
                       </Dialog.Title>
                     </div>
                   </div>
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-8">
                     <Input
-                      label="Account Name"
-                      name="name"
+                      label="Transaction Summary"
+                      name="summary"
                       type="text"
-                      placeholder="Money"
+                      maxLength={maxSummaryLen}
+                      placeholder="Movie Tickets"
                       required
                       disabled={loading}
                     />
                     <MoneyInput
-                      label="Initial Amount"
+                      label="Transaction Amount"
                       name="amount"
                       placeholder="0.00"
                       unit="CAD"
                       sign="$"
                       inputMode="numeric"
+                      required
                       disabled={loading}
+                    />
+                    <Input
+                      label="Date"
+                      name="date"
+                      placeholder="YYYY-MM-DD"
+                      pattern="\d{4}-\d{2}-\d{2}"
+                      type="text"
+                      title="Date in format YYYY-MM-DD"
+                      required
+                    />
+                    <div>
+                      <div className="flex justify-between">
+                        <label className="block text-sm font-medium leading-6 text-gray-900">
+                          Transaction Types
+                        </label>
+                        <span className="text-sm leading-6 text-gray-500">
+                          Required
+                        </span>
+                      </div>
+                      <fieldset className="mt-4">
+                        <legend className="sr-only">Transaction type</legend>
+                        <div className="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
+                          {["expense", "income", "transfer"].map(
+                            (transactionType) => (
+                              <div
+                                key={transactionType}
+                                className="flex items-center"
+                              >
+                                <input
+                                  id={transactionType}
+                                  name="type"
+                                  type="radio"
+                                  defaultChecked={transactionType === "expense"}
+                                  value={transactionType}
+                                  required
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label
+                                  htmlFor={transactionType}
+                                  className="ml-3 block text-sm font-medium capitalize leading-6 text-gray-900"
+                                >
+                                  {transactionType}
+                                </label>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </fieldset>
+                    </div>
+                    <Input
+                      label="Transaction Details"
+                      name="details"
+                      type="text"
+                      placeholder="Input any details for transaction"
                     />
                     <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                       <button
@@ -143,7 +192,7 @@ export default function NewAccountModal() {
                         disabled={loading}
                       >
                         {loading && <LoadingSVG />}
-                        {loading ? "Creating..." : "Create"}
+                        {loading ? "Adding..." : "Add"}
                       </button>
                       <button
                         type="button"

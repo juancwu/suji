@@ -6,6 +6,8 @@
     "build": "next build",
     "db:push": "dotenv drizzle-kit push:mysql",
     "db:studio": "dotenv drizzle-kit studio",
+    "db:gen": "dotenv drizzle-kit generate:mysql",
+    "db:migrate": "dotenv tsx ./src/server/db/migrate.ts",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
@@ -52,6 +54,7 @@
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.5.1",
     "tailwindcss": "^3.3.3",
+    "tsx": "^4.5.0",
     "typescript": "^5.1.6"
   },
   "ct3aMetadata": {

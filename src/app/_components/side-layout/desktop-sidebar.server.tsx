@@ -1,22 +1,10 @@
-// Library imports
 import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-// Custom components
-import AccountList from "@/app/_components/side-layout/account-list.client";
 import Navigation from "@/app/_components/side-layout/navigation.client";
-
-// Constants
 import { appTitle } from "@/app/_components/side-layout/constants";
 
-// Types
-import type { Account } from "@/app/_components/side-layout/types";
-
-export type DesktopSidebarProps = {
-  accounts: Account[];
-};
-
-export default function DesktopSidebar({ accounts }: DesktopSidebarProps) {
+export default function DesktopSidebar() {
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-10 lg:flex lg:w-72 lg:flex-col">
       <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
@@ -27,9 +15,6 @@ export default function DesktopSidebar({ accounts }: DesktopSidebarProps) {
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
               <Navigation />
-            </li>
-            <li>
-              <AccountList accounts={accounts} />
             </li>
             <li className="mt-auto">
               <Link

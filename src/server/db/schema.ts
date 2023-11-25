@@ -74,6 +74,12 @@ export const insertAccountSchema = createInsertSchema(accounts, {
   categories: z.array(z.string().min(1).max(maxCategoryLen)),
 });
 
+export const transactionTypes = ["income", "expense", "transfer"] as const;
+
+type TransactionEnum = typeof transactionTypes;
+
+export type TransactionTypes = TransactionEnum[number];
+
 export const transactions = mysqlTable(
   "transactions",
   {
@@ -88,7 +94,7 @@ export const transactions = mysqlTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updated_at").onUpdateNow(),
-    type: mysqlEnum("type", ["income", "expense", "transfer"]),
+    type: mysqlEnum("type", transactionTypes).notNull(),
     category: varchar("category", { length: maxCategoryLen }),
     amount: double("amount").notNull().default(0),
   },

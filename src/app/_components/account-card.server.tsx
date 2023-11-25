@@ -1,27 +1,9 @@
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
-import { classNames } from "@/app/_utils";
+import { classNames, formatCurrency } from "@/app/_utils";
+import { statuses } from "@/app/_styles/tag.styles";
 import type { Account } from "@/app/_components/side-layout/types";
-
-export const statuses = {
-  income: "text-green-700 bg-green-50 ring-green-600/20",
-  transfer: "text-yellow-600 bg-yellow-50 ring-yellow-600/10",
-  expense: "text-red-700 bg-red-50 ring-red-600/10",
-  neutral: "text-gray-700 bg-gray-50 ring-gray-600/10",
-};
-
-function formatCurrency(value: number, noSign = false) {
-  let numStr = Math.abs(value).toFixed(2);
-  const parts = numStr.split(".");
-  parts[0] = parts[0]!.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-  numStr = parts.join(".");
-
-  const sign = !noSign ? (value < 0 ? "-" : value > 0 ? "+" : "") : "";
-
-  return `${sign}\$${numStr}`;
-}
 
 type Transaction = {
   amount: number;
@@ -32,9 +14,9 @@ type Transaction = {
 type AccountProp = Account & { transactions: Transaction[] };
 
 export default function AccountCard({ account }: { account: AccountProp }) {
-  const year = account.transactions[0]!.date.getFullYear();
-  const month = account.transactions[0]!.date.getMonth() + 1;
-  const day = account.transactions[0]!.date.getDate();
+  const year = account.transactions[0]?.date.getFullYear() ?? 0;
+  const month = account.transactions[0]?.date.getMonth() + 1 ?? 0;
+  const day = account.transactions[0]?.date.getDate() ?? 0;
 
   return (
     <>
@@ -45,7 +27,7 @@ export default function AccountCard({ account }: { account: AccountProp }) {
         </div>
         <div className="ml-auto">
           <Link
-            href={`#${account.publicId}`}
+            href={`/account/${account.publicId}`}
             className="-m-2.5 block p-2.5 font-semibold text-indigo-500 hover:underline"
           >
             Manage
@@ -61,7 +43,8 @@ export default function AccountCard({ account }: { account: AccountProp }) {
                 .toString()
                 .padStart(2, "0")}`}
             >
-              {account.transactions[0]!.date.toLocaleDateString("en-US", {
+              {account.transactions.length < 1 && "N/A"}
+              {account.transactions[0]?.date.toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -77,11 +60,11 @@ export default function AccountCard({ account }: { account: AccountProp }) {
             </div>
             <div
               className={classNames(
-                statuses[account.transactions[0]!.type ?? "neutral"],
+                statuses[account.transactions[0]?.type ?? "neutral"],
                 "rounded-md px-2 py-1 text-xs font-medium capitalize ring-1 ring-inset",
               )}
             >
-              {account.transactions[0]!.type ?? "neutral"}
+              {account.transactions[0]?.type ?? "neutral"}
             </div>
           </dd>
         </div>

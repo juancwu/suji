@@ -4,9 +4,14 @@ import { usePathname } from "next/navigation";
 import type { AccountsTable } from "@/server/db/schema";
 import { classNames } from "@/app/_utils";
 
-type AccountsProps = {
-  accounts: Pick<AccountsTable, "name" | "publicId" | "initial">[];
-};
+export type AccountListItem = Pick<
+  AccountsTable,
+  "name" | "publicId" | "initial"
+>;
+
+export interface AccountsProps {
+  accounts: AccountListItem[];
+}
 
 export default function AccountList({ accounts }: AccountsProps) {
   const pathname = usePathname();

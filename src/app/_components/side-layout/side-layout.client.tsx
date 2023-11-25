@@ -12,39 +12,28 @@ import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
-import { useClerk } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-import AccountList from "@/app/_components/side-layout/account-list.client";
 import Navigation from "@/app/_components/side-layout/navigation.client";
 
 import { appTitle } from "@/app/_components/side-layout/constants";
 import { classNames } from "@/app/_utils";
 
-import type {
-  User,
-  UserNavigation,
-  Account,
-} from "@/app/_components/side-layout/types";
-import type { Transaction } from "@/app/(root)/layout";
+import type { UserNavigation } from "@/app/_components/side-layout/types";
 
 const userNavigation: UserNavigation[] = [{ name: "Your profile", href: "#" }];
 
 export type SideLayoutProps = {
-  user: User;
-  accounts: (Account & { transactions: Transaction[] })[];
   children?: React.ReactNode;
 };
 
-export default function SideLayout({
-  user,
-  accounts,
-  children,
-}: SideLayoutProps) {
+export default function SideLayout({ children }: SideLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { signOut } = useClerk();
+  const { user } = useUser();
   const router = useRouter();
 
   return (
@@ -111,9 +100,6 @@ export default function SideLayout({
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <Navigation />
-                        </li>
-                        <li>
-                          <AccountList accounts={accounts} />
                         </li>
                         <li className="mt-auto">
                           <a
@@ -190,7 +176,7 @@ export default function SideLayout({
                   <Menu as="div" className="relative">
                     <Menu.Button className="-m-1.5 flex items-center p-1.5">
                       <span className="sr-only">Open user menu</span>
-                      {user.imageUrl.startsWith("https://img.clerk.com") && (
+                      {user?.imageUrl.startsWith("https://img.clerk.com") && (
                         <Image
                           width={32}
                           height={32}
@@ -199,9 +185,9 @@ export default function SideLayout({
                           alt=""
                         />
                       )}
-                      {!user.imageUrl.startsWith("https://img.clerk.com") && (
+                      {!user?.imageUrl.startsWith("https://img.clerk.com") && (
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-400">
-                          {user.username?.charAt(0).toUpperCase() ?? "U"}
+                          {user?.username?.charAt(0).toUpperCase() ?? "U"}
                         </div>
                       )}
                       <span className="hidden lg:flex lg:items-center">
@@ -209,7 +195,7 @@ export default function SideLayout({
                           className="ml-4 text-sm font-semibold leading-6 text-gray-900"
                           aria-hidden="true"
                         >
-                          {user.username ?? "User"}
+                          {user?.username ?? "User"}
                         </span>
                         <ChevronDownIcon
                           className="ml-2 h-5 w-5 text-gray-400"
@@ -246,7 +232,9 @@ export default function SideLayout({
                           {({ active }) => (
                             <button
                               onClick={() =>
-                                signOut(() => router.push("/sign-in"))
+                                signOut(() => router.push("/sign-in")).catch(
+                                  console.error,
+                                )
                               }
                               className={classNames(
                                 active ? "bg-gray-50" : "",

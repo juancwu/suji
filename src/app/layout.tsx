@@ -27,6 +27,7 @@ export default function RootLayout({
         <body className={`h-full w-full font-sans ${inter.variable}`}>
           <Notifications />
           {children}
+          <div data-portal="true" id="notifications-portal"></div>
         </body>
       </html>
     </ClerkProvider>

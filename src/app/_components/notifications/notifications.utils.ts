@@ -2,6 +2,8 @@ import { nanoid } from "nanoid";
 import { createStore, useStore, type Store } from "../store/store.client";
 import type { NotificationProps } from "./notification.client";
 
+// TODO: add auto hide notification feature
+
 export interface NotificationData extends Omit<NotificationProps, "onClose"> {
   id?: string;
   variant?: "info" | "success" | "error" | "warning";
