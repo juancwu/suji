@@ -10,6 +10,7 @@ import { statuses } from "@/app/_styles/tag.styles";
 import { classNames, formatCurrency } from "@/app/_utils";
 import { db } from "@/server/db";
 import { transactions as transactionsTable } from "@/server/db/schema";
+import { format } from "date-fns";
 
 export interface TransactionData
   extends Omit<InferSelectModel<typeof transactionsTable>, "amount"> {
@@ -34,9 +35,7 @@ function groupByMonth(
     InferSelectModel<typeof transactionsTable>[]
   >();
   transactions.forEach((transaction) => {
-    const dateKey = `${transaction.date.getFullYear()}-${
-      transaction.date.getMonth() + 1
-    }-${transaction.date.getDate()}`;
+    const dateKey = format(transaction.date, "yyyy-MM-dd");
     if (!groupedDates.has(dateKey)) {
       groupedDates.set(dateKey, []);
     }

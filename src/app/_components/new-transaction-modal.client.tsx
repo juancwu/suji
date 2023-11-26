@@ -11,6 +11,7 @@ import LoadingSVG from "@/app/_components/loading-svg.server";
 import { maxSummaryLen } from "@/server/db/schema";
 import { showNotification } from "./notifications/notifications.utils";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 
 export interface NewTransactionModalProps {
   accountPublidId: string;
@@ -23,6 +24,7 @@ export default function NewTransactionModal({
   const [loading, setLoading] = useState(false);
   const cancelButtonRef = useRef(null);
   const router = useRouter();
+  const currentDate = new Date();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -130,11 +132,9 @@ export default function NewTransactionModal({
                     />
                     <Input
                       label="Date"
+                      defaultValue={format(currentDate, "yyyy-MM-dd")}
                       name="date"
-                      placeholder="YYYY-MM-DD"
-                      pattern="\d{4}-\d{2}-\d{2}"
-                      type="text"
-                      title="Date in format YYYY-MM-DD"
+                      type="date"
                       required
                     />
                     <div>
