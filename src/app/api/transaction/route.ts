@@ -13,6 +13,7 @@ import { nanoid } from "nanoid";
 import { StatusCodes } from "@/app/api/status-codes";
 import { Errors } from "@/app/api/account/create/create-account-errors";
 import { eq } from "drizzle-orm";
+import { isValid } from "date-fns";
 
 export async function POST(req: Request) {
   const { userId } = auth();
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
   let amount: number;
   let accountPublicId: string;
   let transactionType: TransactionTypes;
-  let date: string;
+  let date: Date;
 
   // validate
   try {
@@ -86,8 +87,22 @@ export async function POST(req: Request) {
   }
 
   try {
-    // date = await z.string().datetime().parseAsync(form.get("date"));
-    date = await z.string().parseAsync(form.get("date"));
+    const dateString = form.get("date");
+    if (!dateString) {
+      return Response.json(
+        // TODO: update error message
+        { error: 9 },
+        { status: StatusCodes.BadRequest },
+      );
+    }
+    date = new Date(dateString as string);
+    if (!isValid(date)) {
+      return Response.json(
+        // TODO: update error message
+        { error: 9 },
+        { status: StatusCodes.BadRequest },
+      );
+    }
   } catch (error) {
     return Response.json(
       // TODO: update error message
@@ -127,8 +142,8 @@ export async function POST(req: Request) {
         summary,
         amount,
         details,
+        date,
         type: transactionType,
-        date: new Date(date),
         publicId: nanoid(publicIdLen),
         userExternalId: userId,
         accountInternalId: account.internalId,

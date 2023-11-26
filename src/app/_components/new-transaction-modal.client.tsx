@@ -8,6 +8,7 @@ import { getButtonStyles } from "@/app/_styles/button.styles";
 import Input from "@/app/_components/input.server";
 import MoneyInput from "@/app/_components/money-input.server";
 import LoadingSVG from "@/app/_components/loading-svg.server";
+import DatePicker from "./date-picker/date-picker.client";
 import { maxSummaryLen } from "@/server/db/schema";
 import { showNotification } from "./notifications/notifications.utils";
 import { useRouter } from "next/navigation";
@@ -22,15 +23,19 @@ export default function NewTransactionModal({
 }: NewTransactionModalProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dateRef = useRef<Date | null>(null);
   const cancelButtonRef = useRef(null);
   const router = useRouter();
-  const currentDate = new Date();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    if (dateRef.current === null) {
+      return;
+    }
     setLoading(true);
     try {
       const formData = new FormData(e.target as HTMLFormElement);
+      formData.append("date", format(dateRef.current, "yyyy-MM-dd"));
       formData.append("accountPublicId", accountPublidId);
       const res = await fetch("/api/transaction", {
         method: "POST",
@@ -130,13 +135,18 @@ export default function NewTransactionModal({
                       required
                       disabled={loading}
                     />
-                    <Input
-                      label="Date"
-                      defaultValue={format(currentDate, "yyyy-MM-dd")}
-                      name="date"
-                      type="date"
-                      required
-                    />
+                    <div>
+                      <div className="flex justify-between">
+                        <label className="block text-sm font-medium leading-6 text-gray-900">
+                          Transaction Date
+                        </label>
+                        <span className="text-sm leading-6 text-gray-500">
+                          Required
+                        </span>
+                      </div>
+                      <div aria-hidden="true" className="h-4"></div>
+                      <DatePicker onChange={(day) => (dateRef.current = day)} />
+                    </div>
                     <div>
                       <div className="flex justify-between">
                         <label className="block text-sm font-medium leading-6 text-gray-900">
