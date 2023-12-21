@@ -12,7 +12,7 @@ import DatePicker from "./date-picker/date-picker.client";
 import { maxSummaryLen } from "@/server/db/schema";
 import { showNotification } from "./notifications/notifications.utils";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import { format, startOfToday } from "date-fns";
 
 export interface NewTransactionModalProps {
   accountPublidId: string;
@@ -23,7 +23,7 @@ export default function NewTransactionModal({
 }: NewTransactionModalProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dateRef = useRef<Date | null>(null);
+  const dateRef = useRef<Date>(startOfToday());
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
