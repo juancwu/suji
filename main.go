@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/juancwu/suji/db"
 	"github.com/juancwu/suji/middleware"
+	"github.com/juancwu/suji/views"
 
 	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"
@@ -34,6 +36,10 @@ func main() {
 
 	// serve static files
 	e.Static("/public/static", "public/static")
+
+	e.GET("/auth", func(c echo.Context) error {
+		return views.AuthPage().Render(context.Background(), c.Response().Writer)
+	})
 
 	// health check route
 	e.GET("/healthy", func(c echo.Context) error {
