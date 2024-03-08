@@ -1,0 +1,16 @@
+{
+    "name": "suji",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "tailwindcss -i ./public/assets/main.css -o ./public/static/main.css",
+        "build": "tailwindcss -i ./public/assets/main.css -o ./public/static/main.css --minify"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "tailwindcss": "^3.4.1"
+    }
+}
