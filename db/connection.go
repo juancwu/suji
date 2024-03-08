@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
@@ -13,8 +12,7 @@ type Connection struct {
 }
 
 func NewConnection() (*Connection, error) {
-	token := os.Getenv(os.Getenv("DATABASE_TOKEN"))
-	url := fmt.Sprintf(os.Getenv("DATABASE_URL"), token)
+	url := os.Getenv("DB_URL")
 
 	db, err := sql.Open("libsql", url)
 	if err != nil {
