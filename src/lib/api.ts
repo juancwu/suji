@@ -9,5 +9,10 @@ const getBaseURL = () => {
 };
 
 export const api = createTRPCProxyClient<AppRouter>({
-    links: [loggerLink(), httpBatchLink({ url: `${getBaseURL()}/api/trpc` })],
+    links: [
+        loggerLink({
+            enabled: () => process.env.NODE_ENV === 'development',
+        }),
+        httpBatchLink({ url: `${getBaseURL()}/api/trpc` }),
+    ],
 });

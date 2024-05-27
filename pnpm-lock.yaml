@@ -23,9 +23,6 @@ importers:
       '@trpc/server':
         specifier: ^10.45.2
         version: 10.45.2
-      '@typeschema/valibot':
-        specifier: ^0.13.4
-        version: 0.13.4(valibot@0.29.0)
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.38)
@@ -44,12 +41,12 @@ importers:
       tailwindcss:
         specifier: ^3.4.3
         version: 3.4.3
-      valibot:
-        specifier: ^0.29.0
-        version: 0.29.0
       vinxi:
         specifier: ^0.3.11
         version: 0.3.11(@opentelemetry/api@1.8.0)(@types/node@20.12.12)(ioredis@5.4.1)(terser@5.31.0)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
 packages:
 
@@ -887,25 +884,6 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-
-  '@typeschema/core@0.13.2':
-    resolution: {integrity: sha512-pAt0MK249/9szYaoPuvzhSfOd3smrLhhwCCpUNB4onX32mRx5F3lzDIveIYGQkLYRq58xOX5sjoW+n72f/MLLw==}
-    peerDependencies:
-      '@types/json-schema': ^7.0.15
-    peerDependenciesMeta:
-      '@types/json-schema':
-        optional: true
-
-  '@typeschema/valibot@0.13.4':
-    resolution: {integrity: sha512-DU095eQ3gy5AS4HGTzWWOmGNMZuAMkV9QQe+TtA6a4rdGzBS7c2KPG4IKcs14yIJ/PsSHHrEdODpRms6qF1vJQ==}
-    peerDependencies:
-      '@gcornut/valibot-json-schema': ^0.0.25
-      valibot: ^0.29.0
-    peerDependenciesMeta:
-      '@gcornut/valibot-json-schema':
-        optional: true
-      valibot:
-        optional: true
 
   '@vercel/nft@0.26.5':
     resolution: {integrity: sha512-NHxohEqad6Ra/r4lGknO52uc/GrWILXAMs1BB4401GTqww0fw1bAqzpG1XHuDO+dprg4GvsD9ZLLSsdo78p9hQ==}
@@ -2590,9 +2568,6 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  valibot@0.29.0:
-    resolution: {integrity: sha512-JhZn08lwZPhAamOCfBwBkv/btQt4KeQhekULPH8crH053zUCLSOGEF2zKExu3bFf245tsj6J1dY0ysd/jUiMIQ==}
-
   validate-html-nesting@1.2.2:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
 
@@ -3444,16 +3419,6 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/resolve@1.20.2': {}
-
-  '@typeschema/core@0.13.2': {}
-
-  '@typeschema/valibot@0.13.4(valibot@0.29.0)':
-    dependencies:
-      '@typeschema/core': 0.13.2
-    optionalDependencies:
-      valibot: 0.29.0
-    transitivePeerDependencies:
-      - '@types/json-schema'
 
   '@vercel/nft@0.26.5':
     dependencies:
@@ -5250,8 +5215,6 @@ snapshots:
   urlpattern-polyfill@8.0.2: {}
 
   util-deprecate@1.0.2: {}
-
-  valibot@0.29.0: {}
 
   validate-html-nesting@1.2.2: {}
 
