@@ -13,7 +13,10 @@
         "@trpc/client": "^10.45.2",
         "@trpc/server": "^10.45.2",
         "@typeschema/valibot": "^0.13.4",
+        "autoprefixer": "^10.4.19",
+        "postcss": "^8.4.38",
         "solid-js": "^1.8.17",
+        "tailwindcss": "^3.4.3",
         "valibot": "^0.29.0",
         "vinxi": "^0.3.11"
     },
