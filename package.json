@@ -6,7 +6,8 @@
         "build": "vinxi build",
         "start": "vinxi start",
         "migrate:up": "node migrate.js up",
-        "migrate:down": "node migrate.js down"
+        "migrate:down": "node migrate.js down",
+        "migrate:gen": "node generate.js"
     },
     "dependencies": {
         "@solidjs/meta": "^0.29.4",
