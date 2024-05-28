@@ -20,4 +20,9 @@ export const usersRouter = createTRPCRouter({
             }
             return false;
         }),
+    getUser: publicProcedure.query(({ ctx }) => {
+        return {
+            user: ctx.user !== undefined,
+        };
+    }),
 });

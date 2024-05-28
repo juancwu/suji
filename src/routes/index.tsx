@@ -28,6 +28,13 @@ export default function Home() {
             >
                 Create
             </button>
+            <button
+                onClick={async () => {
+                    console.log(await api.users.getUser.query());
+                }}
+            >
+                here
+            </button>
         </main>
     );
 }
